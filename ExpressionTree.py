@@ -84,11 +84,17 @@ def createTree(self):
             insertRight(newNode)
             currentNode = newNode
         else:
-            currentNode.data = token
+            currentNode.setRootVal(token)
             currentNode = current.parentNode
             s.pop()
 
-def evaluate()
+def evaluate():
+    evalS = Stack()
+    currentNode = self
+    while currentNode.getRootVal() in operators:
+        evalS.push()
+        currentNode.getLeftChild()
+        
 
 def main():
 
