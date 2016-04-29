@@ -1,5 +1,5 @@
 #  File: ExpressionTree.py
-#  Description: 
+#  Description: This file reads arithmetic expressions from an input file and creates expression trees, structures that store the expressions using an infix traversal method.
 #  Student's Name: Elias Ansari
 #  Student's UT EID: eaa957
 #  Course Name: CS 313E 
@@ -10,36 +10,106 @@
 #############################################################################
 class BinaryTree (object):
 
-    def BinaryTree(initdata):
-        return([initdata,[],[]])
-
-    def _init__(self, initValue):
-        self.root = "&"
+    def __init__(self, initValue, parent = None):
         self.data = initValue
-        self.parent = None
+        self.parent = parent
         self.left = None
         self.right = None
         
+    def getRootVal(self):
+        return(self.data)
+    
+    def setRootVal(self, value):
+        self.data = value
 
-    def getRootVal(t):
-        return(t[0])
+    def getLeftChild(self):
+        return(self.left)
 
-    def setRootVal(t, value):
-        t[0] = value
+    def getRightChild(self):
+        return(self.right)
 
-    def getLeftChild(t):
-        return(t[1])
+    def insertLeft(self, newBranch, parent = None):
+        if self.left == None:
+            self.left = BinaryTree(newBranch, parent)
+        else:
+            temp = BinaryTree(newBranch, parent)
+            temp.left = self.left
+            self.left = temp
 
-    def getRightChild(t):
-        return (t[2])
+    def insertRight(self, newBranch, parent = None):
+        if self.right == None:
+            self.right = BinaryTree(newBranch, parent)
+        else:
+            temp = BinaryTree(newBranch, parent)
+            temp.right = self.right
+            self.right = temp
 
-    def insertLeft(root, newBranch):
-        temp = root.pop(1)
-        root.insert(1,[newBranch, temp, []])
+    # calculate expression value
+    def evaluate(self):
+        currentNode = self
+        if currentNode.getRootVal() in operators:
+            operand1 = currentNode.getLeftChild()
+            operand2 = currentNode.getRightChild()
 
-    def insertRight(root, newBranch):
-        temp = root.pop(2)
-        root.insert(2, [newBranch, [], temp])
+            # call the method on itself
+            leftOperand = operand1.evaluate()
+            rightOperand = operand2.evaluate()
+            operator = currentNode.getRootVal()
+            
+            expression = "{}{}{}".format(leftOperand, operator, rightOperand)
+            result = eval(expression)
+        # base case
+        else:
+            result = currentNode.getRootVal()
+        return(result)
+
+    def createTree(self, expression):
+        s = Stack()
+        inputExpr = expression
+        mathExpr = inputExpr.split()
+        currentNode = self
+
+        for token in mathExpr:
+            if token == ")":
+                currentNode = currentNode.parent
+                if not s.isEmpty():
+                    s.pop()
+            elif token == "(":
+                currentNode.insertLeft("&", parent = currentNode)
+                s.push(currentNode)
+                currentNode = currentNode.getLeftChild()
+            elif token in operators:
+                currentNode.setRootVal(token)
+                s.push(currentNode)
+                currentNode.insertRight("&", parent = currentNode)
+                currentNode = currentNode.getRightChild()
+            else:
+                currentNode.setRootVal(token)
+                currentNode = currentNode.parent
+                s.pop()
+
+    # prefix notation
+    def preOrder(currentNode):
+        preList = []
+        if currentNode.data in operators:
+            preList.append(currentNode.data)
+            preList.append(currentNode.getLeftChild().preOrder())
+            preList.append(currentNode.getRightChild().preOrder())
+        else:
+            preList.append(currentNode.data)
+        return " ".join(preList)
+
+    # postfix notation
+    def postOrder(currentNode):
+        postList = []
+        if currentNode.data in operators:
+            postList.append(currentNode.getLeftChild().postOrder())
+            postList.append(currentNode.getRightChild().postOrder())
+            postList.append(currentNode.data)
+        else:
+            postList.append(currentNode.data)
+        return " ".join(postList)
+
 
 class Stack (object):
 
@@ -61,52 +131,33 @@ class Stack (object):
     def size(self):
         return(len(self.items))
 
-
-def createTree(self):
-    s = Stack()
-    inputExpr = str(input("Infix expression: "))
-    mathExpr = inputExpr.split()
-
-    for token in mathExpr:
-        if token == ")":
-            currentNode = current.parentNode
-            if not s.isEmpty():
-                s.pop()
-        elif token == "(":
-            newNode = BinaryTree("&")
-            insertLeft(newNode)
-            s.push(currentNode)
-            currentNode = newNode
-        elif token in operators:
-            currentNode.data = token
-            s.push(currentNode)
-            newNode = BinaryTree("&")
-            insertRight(newNode)
-            currentNode = newNode
-        else:
-            currentNode.setRootVal(token)
-            currentNode = current.parentNode
-            s.pop()
-
-def evaluate():
-    evalS = Stack()
-    currentNode = self
-    while currentNode.getRootVal() in operators:
-        evalS.push()
-        currentNode.getLeftChild()
-        
+    def __str__(self):
+        return(str(self.items))
 
 def main():
 
     # open file
     file = open("treedata.txt", "r")
-    lineOne = file.readlines()
+    lines = file.readlines()
 
     global operators
     operators = ['+', '-', '*', '/']
 
+    # print ouput and call methods
+    for line in lines:
+        expression = line
+        exTree = BinaryTree("&")
+        exTree.createTree(expression)
+        answer = exTree.evaluate()
+
+        print("Infix expression: {}\n".format(expression.rstrip("\n")))
+        print("   Value: {}".format(answer))
+        print("   Prefix expression: {}".format(exTree.preOrder()))
+        print("   Postfix expression: {}\n".format(exTree.postOrder()))
+    
     #close file
+    file.close()
 
-
+    
 
 main()
