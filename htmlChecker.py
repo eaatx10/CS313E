@@ -5,8 +5,6 @@
 #  Course Name: CS 313E 
 #  Unique Number: 50940
 #
-#  Date Created: 2/27/16
-#  Date Last Modified:
 #############################################################################
 # create stack class
 class Stack:
