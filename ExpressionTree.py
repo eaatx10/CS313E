@@ -4,9 +4,7 @@
 #  Student's UT EID: eaa957
 #  Course Name: CS 313E 
 #  Unique Number: 50940
-#
-#  Date Created: 4/18/16
-#  Date Last Modified: 
+# 
 #############################################################################
 class BinaryTree (object):
 
