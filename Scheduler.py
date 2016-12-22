@@ -5,8 +5,6 @@
 #  Course Name: CS 313E 
 #  Unique Number: 50940
 #
-#  Date Created: 3/23/16
-#  Date Last Modified: 3/29/16
 #############################################################################
 # create queue
 class Queue:
